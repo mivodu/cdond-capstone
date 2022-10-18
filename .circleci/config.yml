@@ -36,7 +36,7 @@ jobs:
           name: Deploy Cloudformation Template
           command: |
             aws cloudformation deploy \
-            --template cloud-formation-template.yml \
+            --template cfn-eks-vpc-private-subnets.yml \
             --stack << parameters.stack-name >> \
 
 workflows:

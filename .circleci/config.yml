@@ -3,22 +3,28 @@ version: '2.1'
 orbs:
   docker: circleci/docker@2.1.4
 
+jobs:
+  - docker/hadolint:
+      dockerfiles: Dockerfile
+      executor-class: medium
+      hadolint-tag: 2.2.0-debian
+      ignore-rules: 'DL4005,DL3008'
+      trusted-registries: 'docker.io'
+  - docker/publish:
+      executor:
+        image: circleci/node
+        name: docker/docker
+        tag: boron-browsers
+      image: my/image
+      remote-docker-dlc: true
+      tag: my-tag
+      use-remote-docker: true   
+      deploy: false #do not publish yet       
+
 workflows:
-  lint:
+  default:
     jobs:
-      - docker/hadolint:
-          dockerfiles: Dockerfile
-          executor-class: medium
-          hadolint-tag: 2.2.0-debian
-          ignore-rules: 'DL4005,DL3008'
-          trusted-registries: 'docker.io'
+      - docker/hadolint
       - docker/publish:
-          executor:
-            image: circleci/node
-            name: docker/docker
-            tag: boron-browsers
-          image: my/image
-          remote-docker-dlc: true
-          tag: my-tag
-          use-remote-docker: true   
-          deploy: false #do not publish yet       
+          requires: 
+            - docker/hadolint

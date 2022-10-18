@@ -22,7 +22,7 @@ jobs:
       - checkout
       - run:
           name: Validate CloudFormation template
-          command: pip install cfn-lint && cfn-lint cloud-formation-template.yml            
+          command: pip install cfn-lint && cfn-lint cfn-eks-vpc-private-subnets.yml            
   deploy-cfn:
     parameters:
       stack-name:

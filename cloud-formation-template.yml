@@ -286,7 +286,7 @@ Resources:
         - !Ref PublicSubnet02
         - !Ref PrivateSubnet01
         - !Ref PrivateSubnet02
-    DependsOn: [ControlPlaneRole, PublicSubnet01, PublicSubnet02, PrivateSubnet01, PrivateSubnet02, ControlPlaneSecurityGroup]
+#    DependsOn: [ControlPlaneRole, PublicSubnet01, PublicSubnet02, PrivateSubnet01, PrivateSubnet02, ControlPlaneSecurityGroup]
 
   ControlPlaneRole:
     Type: AWS::IAM::Role

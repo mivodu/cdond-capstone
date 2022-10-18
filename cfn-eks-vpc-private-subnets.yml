@@ -8,11 +8,12 @@ Parameters:
 #  ControlPlaneRole:
 #    Type: String
 #    Description: The name of the IAM role for the EKS service to assume.  
+#    Default: 
     
-#  EKSClusterName:
-#    Type: String
-#    Description: Name of the Kubernetes cluster
-#    Default: udacity-capstone-eks-cluster
+  EKSClusterName:
+    Type: String
+    Description: Name of the Kubernetes cluster
+    Default: udacity-capstone-eks-cluster
     
   VpcBlock:
     Type: String
@@ -276,8 +277,8 @@ Resources:
     Type: AWS::EKS::Cluster
     Properties:
       Name: !Ref EKSClusterName
-#      RoleArn:
-#        "Fn::GetAtt": ["ControlPlaneRole", "Arn"]
+      RoleArn:
+        "Fn::GetAtt": ["eksClusterRole", "Arn"]
       ResourcesVpcConfig:
         SecurityGroupIds:
         - !Ref ControlPlaneSecurityGroup

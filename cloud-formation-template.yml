@@ -5,6 +5,17 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: EKS cluster using a VPC with two public and private subnets
 Parameters:
 
+Parameters:  
+
+#  EKSIAMRoleName:
+#    Type: String
+#    Description: The name of the IAM role for the EKS service to assume.  
+    
+  EKSClusterName:
+    Type: String
+    Description: Name of the Kubernetes cluster
+    Default: udacity-capstone-eks-cluster
+    
   VpcBlock:
     Type: String
     Default: 192.168.0.0/16
@@ -112,7 +123,6 @@ Resources:
   PrivateRoute01:
     DependsOn:
     - VPCGatewayAttachment
-    - NatGateway01
     Type: AWS::EC2::Route
     Properties:
       RouteTableId: !Ref PrivateRouteTable01
@@ -122,7 +132,6 @@ Resources:
   PrivateRoute02:
     DependsOn:
     - VPCGatewayAttachment
-    - NatGateway02
     Type: AWS::EC2::Route
     Properties:
       RouteTableId: !Ref PrivateRouteTable02
@@ -131,8 +140,6 @@ Resources:
 
   NatGateway01:
     DependsOn:
-    - NatGatewayEIP1
-    - PublicSubnet01
     - VPCGatewayAttachment
     Type: AWS::EC2::NatGateway
     Properties:
@@ -144,8 +151,6 @@ Resources:
 
   NatGateway02:
     DependsOn:
-    - NatGatewayEIP2
-    - PublicSubnet02
     - VPCGatewayAttachment
     Type: AWS::EC2::NatGateway
     Properties:
@@ -283,7 +288,7 @@ Resources:
         - !Ref PublicSubnet02
         - !Ref PrivateSubnet01
         - !Ref PrivateSubnet02
-    DependsOn: [EKSIAMRole, PublicSubnet01, PublicSubnet02, PrivateSubnet01, PrivateSubnet02, ControlPlaneSecurityGroup]
+    DependsOn: [ControlPlaneRole, PublicSubnet01, PublicSubnet02, PrivateSubnet01, PrivateSubnet02, ControlPlaneSecurityGroup]
 
   ControlPlaneRole:
     Type: AWS::IAM::Role

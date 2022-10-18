@@ -55,6 +55,7 @@ workflows:
       #    deploy: false #do not publish yet       
       #    requires: 
       #      - docker/hadolint
+      - lint-cfn
       - deploy-cfn:
           stack-name: Udacity-Capstone-Hello-Michael
           requires:

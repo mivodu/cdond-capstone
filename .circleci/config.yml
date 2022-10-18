@@ -2,14 +2,9 @@ version: '2.1'
 
 orbs:
   docker: circleci/docker@2.1.4
+  aws-cli: circleci/aws-cli@1.4.0
 
-#jobs:
-#  docker/hadolint:
-#    dockerfiles: Dockerfile
-#    executor-class: medium
-#    hadolint-tag: 2.2.0-debian
-#    ignore-rules: 'DL4005,DL3008'
-#    trusted-registries: 'docker.io'
+jobs:
 #  docker/publish:
 #    executor:
 #      image: circleci/node
@@ -20,20 +15,47 @@ orbs:
 #    tag: my-tag
 #    use-remote-docker: true   
 #    deploy: false #do not publish yet       
+  lint-cfn:
+    docker:
+      - image: cimg/python:3.9
+    steps:
+      - checkout
+      - run:
+          name: Validate CloudFormation template
+          command: pip install cfn-lint && cfn-lint cloud-formation-template.yml            
+  deploy-cfn:
+    parameters:
+      stack-name:
+        description: Name of the CloudFormation stack
+        type: string
+    executor: aws-cli/default
+    steps:
+      - checkout
+      - aws-cli/setup
+      - run:
+          name: Deploy Cloudformation Template
+          command: |
+            aws cloudformation deploy \
+            --template cloud-formation-template.yml \
+            --stack << parameters.stack-name >> \
 
 workflows:
   default:
     jobs:
-      - docker/hadolint
-      - docker/publish:
-          executor:
-            image: circleci/node
-            name: docker/docker
-            tag: boron-browsers
-          image: my/image
-          remote-docker-dlc: true
-          tag: my-tag
-          use-remote-docker: true   
-          deploy: false #do not publish yet       
-          requires: 
-            - docker/hadolint
+      #- docker/hadolint
+      #- docker/publish:
+      #    executor:
+      #      image: circleci/node
+      #      name: docker/docker
+      #      tag: boron-browsers
+      #    image: my/image
+      #    remote-docker-dlc: true
+      #    tag: my-tag
+      #    use-remote-docker: true   
+      #    deploy: false #do not publish yet       
+      #    requires: 
+      #      - docker/hadolint
+      - deploy-cfn:
+          stack-name: Udacity-Capstone-Hello-Michael
+          requires:
+            - lint-cfn

@@ -5,10 +5,10 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: EKS cluster using a VPC with two public and private subnets
 Parameters:
 
-#  ControlPlaneRole:
-#    Type: String
-#    Description: The name of the IAM role for the EKS service to assume.  
-#    Default: 
+  ControlPlaneRole:
+    Type: String
+    Description: The name of the IAM role for the EKS service to assume.  
+    Default: eksClusterRole
     
   EKSClusterName:
     Type: String
@@ -278,7 +278,7 @@ Resources:
     Properties:
       Name: !Ref EKSClusterName
       RoleArn:
-        "Fn::GetAtt": ["eksClusterRole", "Arn"]
+        "Fn::GetAtt": ["ControlPlaneRole", "Arn"]
       ResourcesVpcConfig:
         SecurityGroupIds:
         - !Ref ControlPlaneSecurityGroup

@@ -3,7 +3,7 @@
 
 AWSTemplateFormatVersion: '2010-09-09'
 Description: EKS cluster using a VPC with two public and private subnets
-Parameters:
+#Parameters:
 #  EKSClusterName:
 #    Type: String
 #    Description: Name of EKS cluster

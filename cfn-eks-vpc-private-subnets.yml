@@ -24,10 +24,10 @@ Parameters:
     Description: The ARN name of the IAM role for the EKS service to assume.  
     Default: arn:aws:iam::740460536467:role/eksClusterRole
 
-  NodeInstanceRoleArn:
+  NodeInstanceRole:
     Type: String
     Description: The ARN name of IAM role for the Worker Nodes to assume
-    Default: arn:aws:iam::740460536467:role/WorkerNodeInstanceRole
+    Default: WorkerNodeInstanceRole #arn:aws:iam::740460536467:role/WorkerNodeInstanceRole
     
 #  ClusterControlPlaneSecurityGroup:
 #    Type: "AWS::EC2::SecurityGroup::Id"
@@ -398,7 +398,7 @@ Resources:
     Properties:
       Path: /
       Roles:
-        - Ref: NodeInstanceRoleArn
+        - Ref: NodeInstanceRole
 
   NodeSecurityGroup:
     Type: "AWS::EC2::SecurityGroup"

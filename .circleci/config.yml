@@ -56,7 +56,7 @@ workflows:
       #    requires: 
       #      - docker/hadolint
       - lint-cfn
-      - deploy-cfn:
-          stack-name: Udacity-Capstone-Hello-Michael
-          requires:
-            - lint-cfn
+      #- deploy-cfn:
+      #    stack-name: Udacity-Capstone-Hello-Michael
+      #    requires:
+      #      - lint-cfn

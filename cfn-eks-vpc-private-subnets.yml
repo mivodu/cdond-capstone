@@ -3,6 +3,20 @@
 
 AWSTemplateFormatVersion: '2010-09-09'
 Description: EKS cluster using a VPC with two public and private subnets
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      -
+        Label:
+          default: "Worker Network Configuration"
+        Parameters:
+          - VpcBlock
+          - PublicSubnet01Block
+          - PublicSubnet02Block
+          - PrivateSubnet01Block
+          - PrivateSubnet02Block
+
 Parameters:
 
   ControlPlaneRoleArn:
@@ -103,19 +117,11 @@ Parameters:
 #    Type: "AWS::EC2::VPC::Id"
 #    Description: The VPC of the worker instances
 
-
-Metadata:
-  AWS::CloudFormation::Interface:
-    ParameterGroups:
-      -
-        Label:
-          default: "Worker Network Configuration"
-        Parameters:
-          - VpcBlock
-          - PublicSubnet01Block
-          - PublicSubnet02Block
-          - PrivateSubnet01Block
-          - PrivateSubnet02Block
+Conditions:
+  HasNodeImageId: !Not
+    - "Fn::Equals":
+        - Ref: NodeImageId
+        - ""
 
 Resources:
   #============================================================================#
@@ -363,12 +369,6 @@ Resources:
   #============================================================================#
   # Worker Node
   #============================================================================#
-
-Conditions:
-  HasNodeImageId: !Not
-    - "Fn::Equals":
-        - Ref: NodeImageId
-        - ""
 
   NodeInstanceRole:
     Type: "AWS::IAM::Role"

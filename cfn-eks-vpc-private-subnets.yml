@@ -402,7 +402,7 @@ Resources:
       Tags:
         - Key: !Sub kubernetes.io/cluster/${ClusterName}
           Value: owned
-      VpcId: !Ref Vpc
+      VpcId: !Ref VPC
 
   NodeSecurityGroupIngress:
     Type: "AWS::EC2::SecurityGroupIngress"
@@ -512,7 +512,7 @@ Resources:
         - !Ref PrivateSubnet02
     UpdatePolicy:
       AutoScalingRollingUpdate:
-        MaxBatchSize: "1"
+        MaxBatchSize: 1
         MinInstancesInService: !Ref NodeAutoScalingGroupDesiredCapacity
         PauseTime: PT5M
 

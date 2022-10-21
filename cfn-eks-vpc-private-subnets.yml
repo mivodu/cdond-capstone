@@ -4,19 +4,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: EKS cluster using a VPC with two public and private subnets
 
-Metadata:
-  AWS::CloudFormation::Interface:
-    ParameterGroups:
-      -
-        Label:
-          default: "Worker Network Configuration"
-        Parameters:
-          - VpcBlock
-          - PublicSubnet01Block
-          - PublicSubnet02Block
-          - PrivateSubnet01Block
-          - PrivateSubnet02Block
-
 Parameters:
 
 #  ControlPlaneRoleArn:

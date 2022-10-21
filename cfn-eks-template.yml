@@ -509,7 +509,7 @@ Resources:
     DependsOn: ControlPlane
     Properties:
       ClusterName: !Sub "${AWS::StackName}"
-      NodeRole: !GetAtt WorkerNodesRole.Arn
+      NodeRole: WorkerNodeInstanceRole
       ScalingConfig:
         MinSize:
           Ref: NodeAutoScalingGroupMinSize

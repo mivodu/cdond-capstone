@@ -22,7 +22,7 @@ jobs:
       - checkout
       - run:
           name: Validate CloudFormation template
-          command: pip install cfn-lint && cfn-lint cfn-eks-template.yml            
+          command: pip install cfn-lint && cfn-lint temp.yml            
   deploy-cfn:
     parameters:
       stack-name:
@@ -36,7 +36,7 @@ jobs:
           name: Deploy Cloudformation Template
           command: |
             aws cloudformation deploy \
-            --template cfn-eks-template.yml \
+            --template temp.yml \
             --stack << parameters.stack-name >> \
 
 workflows:

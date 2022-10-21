@@ -22,5 +22,6 @@ Resources:
     Type: "AWS::IAM::InstanceProfile"
     Properties:
       Path: /
-      Roles: "WorkerNodeInstanceRole"
+      Roles: 
+        - WorkerNodeInstanceRole
 

@@ -95,7 +95,7 @@ Parameters:
 
   NodeImageId:
     Type: String
-    Default: ""
+    Default: "ami-06acc29adf84c8f3c"
     Description: (Optional) Specify your own custom image ID. This value overrides any AWS Systems Manager Parameter Store value specified above.
 
   NodeImageIdSSMParam:

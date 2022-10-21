@@ -75,7 +75,7 @@ Parameters:
 
   NodeAutoScalingGroupDesiredCapacity:
     Type: Number
-    Default: 3
+    Default: 2
     Description: Desired capacity of Node Group ASG.
 
   NodeAutoScalingGroupMaxSize:

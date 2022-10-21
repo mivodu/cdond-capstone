@@ -335,7 +335,9 @@ Resources:
     Properties:
       ClusterName: !Ref EKSClusterName
       NodeRole: arn:aws:iam::740460536467:role/WorkerNodeInstanceRole # hard coded
-      LaunchTemplate: !Ref WorkerNodesLaunchConfiguration # added
+      InstanceTypes: 
+        - t2.micro
+#      LaunchTemplate: !Ref WorkerNodesLaunchConfiguration # added
       ScalingConfig:
         MinSize: 2
 #          Ref: NumWorkerNodes
@@ -349,32 +351,32 @@ Resources:
 #      Tags:
 #        - Key: Name
 #          Value: "WorkerNodesAutoScalingGroup"
-  WorkerNodesLaunchConfiguration:
-    Type: AWS::AutoScaling::LaunchConfiguration
+#  WorkerNodesLaunchConfiguration:
+#    Type: AWS::AutoScaling::LaunchConfiguration
     # Wait until cluster is ready before launching worker nodes
-    DependsOn: ControlPlane
-    Properties:
-      AssociatePublicIpAddress: false
-      IamInstanceProfile: !Ref WorkerNodesInstanceProfile
-      ImageId: !If
-        - HasNodeImageId
-        - Ref: NodeImageId
-        - Ref: NodeImageIdSSMParam
-      InstanceType: !Ref WorkerNodesInstanceType
-      KeyName: !Ref KeyPairName
-      SecurityGroups:
-        - !Ref WorkerNodesSecurityGroup
-      UserData:
-        Fn::Base64: !Sub |
+#    DependsOn: ControlPlane
+#    Properties:
+#      AssociatePublicIpAddress: false
+#      IamInstanceProfile: !Ref WorkerNodesInstanceProfile
+#      ImageId: !If
+#        - HasNodeImageId
+#        - Ref: NodeImageId
+#        - Ref: NodeImageIdSSMParam
+#      InstanceType: !Ref WorkerNodesInstanceType
+#      KeyName: !Ref KeyPairName
+#      SecurityGroups:
+#        - !Ref WorkerNodesSecurityGroup
+#      UserData:
+#        Fn::Base64: !Sub |
             #!/bin/bash
-            set -o xtrace
-            /etc/eks/bootstrap.sh ${ControlPlane}
-            /opt/aws/bin/cfn-signal \
-                            --exit-code $? \
-                            --stack  ${AWS::StackName} \
-                            --resource WorkerNodeGroup \
-                            --region ${AWS::Region}
-            /usr/bin/ping -c 5 google.com 
+#            set -o xtrace
+#            /etc/eks/bootstrap.sh ${ControlPlane}
+#            /opt/aws/bin/cfn-signal \
+#                            --exit-code $? \
+#                            --stack  ${AWS::StackName} \
+#                            --resource WorkerNodeGroup \
+#                            --region ${AWS::Region}
+#            /usr/bin/ping -c 5 google.com 
   WorkerNodesInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:

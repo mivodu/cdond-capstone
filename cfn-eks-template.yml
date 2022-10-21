@@ -504,7 +504,7 @@ Resources:
         PauseTime: PT5M
 
   # IMPORTANT NOTE: We have to define NodeGroup (type: AWS::EKS::Nodegroup), without this no woker nodes will be attach to cluster
-  WorkerNodegroup:
+  WorkerNodeGroup:
     Type: AWS::EKS::Nodegroup
     DependsOn: ControlPlane
     Properties:
@@ -522,7 +522,7 @@ Resources:
         - !Ref PrivateSubnet02
       Tags:
         - Key: Name
-          Value: "WorkerNodesAutoScalingGroup"
+          Value: "NodeGroup"
 
 Outputs:
 

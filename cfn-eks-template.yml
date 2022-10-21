@@ -375,24 +375,6 @@ Resources:
   # Worker Node
   #============================================================================#
 
-#  NodeInstanceRole:
-#    Type: "AWS::IAM::Role"
-#    Properties:
-#      AssumeRolePolicyDocument:
-#        Version: "2012-10-17"
-#        Statement:
-#          - Effect: Allow
-#            Principal:
-#              Service:
-#                - ec2.amazonaws.com
-#            Action:
-#              - "sts:AssumeRole"
-#      ManagedPolicyArns:
-#        - "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-#        - "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-#        - "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-#      Path: /
-
   NodeInstanceProfile:
     Type: "AWS::IAM::InstanceProfile"
     Properties:
@@ -472,7 +454,7 @@ Resources:
   NodeLaunchConfig:
     Type: "AWS::AutoScaling::LaunchConfiguration"
     Properties:
-      AssociatePublicIpAddress: "true"
+      AssociatePublicIpAddress: false
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
           Ebs:
@@ -488,14 +470,14 @@ Resources:
       KeyName: !Ref KeyName
       SecurityGroups:
         - Ref: NodeSecurityGroup
-      UserData: !Base64
+      UserData: !Base64 # --resource auf die echte nodegroup setzen
         "Fn::Sub": |
           #!/bin/bash
           set -o xtrace
           /etc/eks/bootstrap.sh ${ClusterName} ${BootstrapArguments}
           /opt/aws/bin/cfn-signal --exit-code $? \
                    --stack  ${AWS::StackName} \
-                   --resource NodeGroup  \
+                   --resource NodeGroup  \ 
                    --region ${AWS::Region}
 
   NodeGroup:
@@ -520,6 +502,27 @@ Resources:
         MaxBatchSize: 1
         MinInstancesInService: !Ref NodeAutoScalingGroupDesiredCapacity
         PauseTime: PT5M
+
+  # IMPORTANT NOTE: We have to define NodeGroup (type: AWS::EKS::Nodegroup), without this no woker nodes will be attach to cluster
+  WorkerNodegroup:
+    Type: AWS::EKS::Nodegroup
+    DependsOn: ControlPlane
+    Properties:
+      ClusterName: !Sub "${AWS::StackName}"
+      NodeRole: !GetAtt WorkerNodesRole.Arn
+      ScalingConfig:
+        MinSize:
+          Ref: NodeAutoScalingGroupMinSize
+        DesiredSize:
+          Ref: NodeAutoScalingGroupDesiredCapacity
+        MaxSize:
+          Ref: NodeAutoScalingGroupMaxSize
+      Subnets:
+        - !Ref PrivateSubnet01
+        - !Ref PrivateSubnet02
+      Tags:
+        - Key: Name
+          Value: "WorkerNodesAutoScalingGroup"
 
 Outputs:
 

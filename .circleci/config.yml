@@ -38,6 +38,7 @@ jobs:
             aws cloudformation deploy \
             --template temp.yml \
             --stack << parameters.stack-name >> \
+          no_output_timeout: 30m
 
 workflows:
   default:

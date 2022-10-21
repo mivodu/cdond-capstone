@@ -306,27 +306,27 @@ Resources:
   # Worker nodes (auto-scaling group)
   #============================================================================#
 
-  WorkerNodesAutoScalingGroup:
-    Type: AWS::AutoScaling::AutoScalingGroup
-    UpdatePolicy:
-      AutoScalingRollingUpdate:
-        MinInstancesInService: 1
-        MaxBatchSize: 1
-    Properties:
-      LaunchConfigurationName: !Ref WorkerNodesLaunchConfiguration
-      MinSize: !Ref NumWorkerNodes
-      MaxSize: !Ref NumWorkerNodes
-      VPCZoneIdentifier:
-        - !Ref PrivateSubnet1
-        - !Ref PrivateSubnet2
-      Tags:
-        - Key: Name
-          Value: !Sub "${AWS::StackName}-WorkerNodesAutoScalingGroup"
-          PropagateAtLaunch: true
+#  WorkerNodesAutoScalingGroup:
+#    Type: AWS::AutoScaling::AutoScalingGroup
+#    UpdatePolicy:
+#      AutoScalingRollingUpdate:
+#        MinInstancesInService: 1
+#        MaxBatchSize: 1
+#    Properties:
+#      LaunchConfigurationName: !Ref WorkerNodesLaunchConfiguration
+#      MinSize: !Ref NumWorkerNodes
+#      MaxSize: !Ref NumWorkerNodes
+#      VPCZoneIdentifier:
+#        - !Ref PrivateSubnet1
+#        - !Ref PrivateSubnet2
+#      Tags:
+#        - Key: Name
+#          Value: !Sub "${AWS::StackName}-WorkerNodesAutoScalingGroup"
+#          PropagateAtLaunch: true
         # Without this tag, worker nodes are unable to join the cluster:
-        - Key: !Sub "kubernetes.io/cluster/${ControlPlane}"
-          Value: "owned"
-          PropagateAtLaunch: true
+#        - Key: !Sub "kubernetes.io/cluster/${ControlPlane}"
+#          Value: "owned"
+#          PropagateAtLaunch: true
 
   # IMPORTANT NOTE: We have to define NodeGroup (type: AWS::EKS::Nodegroup), without this no woker nodes will be attach to cluster
   WorkerNodegroup:
@@ -336,12 +336,12 @@ Resources:
       ClusterName: !Ref EKSClusterName
       NodeRole: arn:aws:iam::740460536467:role/WorkerNodeInstanceRole # hard coded
       ScalingConfig:
-        MinSize:
-          Ref: NumWorkerNodes
-        DesiredSize:
-          Ref: NumWorkerNodes
-        MaxSize:
-          Ref: NumWorkerNodes
+        MinSize: 2
+#          Ref: NumWorkerNodes
+        DesiredSize: 2
+#          Ref: NumWorkerNodes
+        MaxSize: 4
+#          Ref: NumWorkerNodes
       Subnets:
         - !Ref PrivateSubnet1
         - !Ref PrivateSubnet2

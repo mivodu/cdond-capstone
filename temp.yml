@@ -333,7 +333,7 @@ Resources:
     Type: AWS::EKS::Nodegroup
     DependsOn: ControlPlane
     Properties:
-      ClusterName: !Sub "${AWS::StackName}"
+      ClusterName: !Ref EKSClusterName
       NodeRole: arn:aws:iam::740460536467:role/WorkerNodeInstanceRole # hard coded
       ScalingConfig:
         MinSize:

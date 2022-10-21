@@ -9,10 +9,10 @@ Parameters:
     Type: String
     Description: Name of k8s cluster
     Default: udacity-capstone-eks-cluster
-  NumWorkerNodes:
-    Type: Number
-    Description: Number of worker nodes to create
-    Default: 2
+#  NumWorkerNodes:
+#    Type: Number
+#    Description: Number of worker nodes to create
+#    Default: 2
   WorkerNodesInstanceType:
     Type: String
     Description: EC2 instance type for the worker nodes
@@ -335,6 +335,7 @@ Resources:
     Properties:
       ClusterName: !Ref EKSClusterName
       NodeRole: arn:aws:iam::740460536467:role/WorkerNodeInstanceRole # hard coded
+      LaunchTemplate: !Ref WorkerNodesLaunchConfiguration # added
       ScalingConfig:
         MinSize: 2
 #          Ref: NumWorkerNodes

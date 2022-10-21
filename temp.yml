@@ -21,10 +21,10 @@ Parameters:
 #    Type: String
 #    Description: Name of an existing EC2 key pair (for SSH-access to the worker node instances)
 #    Default: udacity  
-  NodeImageId:
-    Type: String
-    Default: ""
-    Description: (Optional) Specify your own custom image ID. This value overrides any AWS Systems Manager Parameter Store value specified above.
+#  NodeImageId:
+#    Type: String
+#    Default: ""
+#    Description: (Optional) Specify your own custom image ID. This value overrides any AWS Systems Manager Parameter Store value specified above.
 #  NodeImageIdSSMParam:
 #    Type: "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>"
 #    Default: /aws/service/eks/optimized-ami/1.14/amazon-linux-2/recommended/image_id

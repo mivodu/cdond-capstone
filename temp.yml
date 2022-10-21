@@ -211,7 +211,7 @@ Resources:
   ControlPlane:
     Type: AWS::EKS::Cluster
     Properties:
-      Name: !Ref AWS::StackName
+      Name: !Ref EKSClusterName
       RoleArn: arn:aws:iam::740460536467:role/eksClusterRole # hardcoded role as creation through fn does not work
       ResourcesVpcConfig:
         SecurityGroupIds:

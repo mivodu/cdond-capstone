@@ -4,6 +4,8 @@ metadata:
   name: udacity-capstone-hello-michael
   labels:
     app: udacity-capstone-hello-michael
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"    
 spec:
   type: LoadBalancer
   ports:

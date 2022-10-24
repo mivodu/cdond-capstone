@@ -83,25 +83,25 @@ jobs:
 #          namespace: test
       - kubernetes/create-or-update-resource:
           resource-file-path: app-service.yaml
+
 workflows:
   default:
-   jobs:
-    - docker/hadolint
-    - build-and-push-docker-image:
-        requires: 
-          - docker/hadolint
-    - lint-cfn
-    - deploy-cfn:
-        stack-name: Udacity-Capstone-Hello-Michael
-        requires:
-          - lint-cfn
-    - anchore/image_scan:
-        image_name: mivodu/udacity-capstone-hello-michael:latest
-        timeout: '300'    
-        requires:
-          - build-and-push-docker-image
-          - deploy-cfn
-
-     - create-deployment:
-        requires:
-          - anchore/image_scan
+    jobs:
+      - docker/hadolint
+      - build-and-push-docker-image:
+          requires: 
+            - docker/hadolint
+      - lint-cfn
+      - deploy-cfn:
+          stack-name: Udacity-Capstone-Hello-Michael
+          requires:
+            - lint-cfn
+      - anchore/image_scan:
+          image_name: mivodu/udacity-capstone-hello-michael:latest
+          timeout: '300'    
+          requires:
+            - build-and-push-docker-image
+            - deploy-cfn
+      - create-deployment:
+          requires:
+            - anchore/image_scan

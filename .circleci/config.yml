@@ -82,7 +82,7 @@ jobs:
 workflows:
   jobs:
     - docker/hadolint
-    - build-and-push-docker-image
+    - build-and-push-docker-image:
         requires: 
           - docker/hadolint
 #    - check-stack-availability

@@ -82,4 +82,4 @@ workflows:
 #          requires:
 #            - build-and-push-docker-image
 #            - deploy-cfn
-      - create-deployment:
+      - create-deployment

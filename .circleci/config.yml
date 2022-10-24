@@ -66,7 +66,7 @@ jobs:
       - checkout
       - aws-cli/setup
       - aws-eks/update-kubeconfig-with-authenticator:
-          cluster-name: "Udacity-Capstone-Hello-Michael"
+          cluster-name: "udacity-capstone-eks-cluster"
           install-kubectl: true
 #      - kubernetes/create-or-update-resource:
 #          get-rollout-status: true

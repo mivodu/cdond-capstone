@@ -21,11 +21,11 @@ spec:
     spec:
       containers:
         - name: hello-michael
-          image: mivodu/udacity-capstone-hello-michael::4ff584c6dab8ecd68539efc419a3da15e90d9e97
+          image: mivodu/udacity-capstone-hello-michael:latest
           ports:
             - containerPort: 80
-          readinessProbe:
-            httpGet:
-              path: /api
-              port: 80
-            periodSeconds: 10
+#          readinessProbe:
+#            httpGet:
+#              path: /api
+#              port: 80
+#            periodSeconds: 10

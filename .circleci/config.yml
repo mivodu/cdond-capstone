@@ -28,7 +28,7 @@ jobs:
       - checkout
       - run:
           name: Validate CloudFormation template
-          command: pip install cfn-lint && cfn-lint cfn-eks-temp.yml            
+          command: pip install cfn-lint && cfn-lint cfn-eks-template.yml            
   deploy-cfn:
     parameters:
       stack-name:
@@ -47,7 +47,7 @@ jobs:
             else
               echo "Cloudformation stack does not exist yet, we have to create it"
               aws cloudformation deploy \
-                --template cfn-eks-temp.yml \
+                --template cfn-eks-template.yml \
                 --stack << parameters.stack-name >> \              
             fi
           no_output_timeout: 30m

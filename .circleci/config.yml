@@ -19,17 +19,6 @@ jobs:
       - run:
           command: |
             echo "Digest is: $(</tmp/digest.txt)"
-
-#  docker/publish:
-#    executor:
-#      image: circleci/node
-#      name: docker/docker
-#      tag: boron-browsers
-#    image: my/image
-#    remote-docker-dlc: true
-#    tag: my-tag
-#    use-remote-docker: true   
-#    deploy: false #do not publish yet       
   check-stack-availability:
     executor: aws-cli/default
     steps:
@@ -68,19 +57,9 @@ jobs:
             --stack << parameters.stack-name >> \
           no_output_timeout: 30m
 
-#  - when:
-#    condition:
-#      or:
-#        - and:
-#          - equal: [ main, << pipeline.git.branch >> ]
-#          - or: [ << pipeline.parameters.param1 >>, << pipeline.parameters.param2 >> ]
-#        - or:
-#          - equal: [ false, << pipeline.parameters.param1 >> ]
-#    steps:
-#      - run: echo "I am on main AND param1 is true OR param2 is true -- OR param1 is false"
-
 workflows:
-  jobs:
+  default:
+   jobs:
     - docker/hadolint
     - build-and-push-docker-image:
         requires: 
@@ -91,15 +70,3 @@ workflows:
 #        stack-name: Udacity-Capstone-Hello-Michael
 #        requires:
 #          - lint-cfn
-
-
-
-#  conditional-workflow:
-#    when:
-#      and: # All must be true to trigger
-#        - equal: [ main, << pipeline.git.branch >> ]
-#        - not: << pipeline.parameters.param1 >>
-#        - or: [ << pipeline.parameters.param1 >>, << pipeline.parameters.param2 >> ]
-#
-#    jobs:
-#      - job-on-condition

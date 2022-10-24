@@ -84,4 +84,4 @@ workflows:
 #        stack-name: Udacity-Capstone-Hello-Michael
 #        requires:
 #          - lint-cfn
-    - deploy-application
+      - deploy-application

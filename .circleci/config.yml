@@ -18,11 +18,8 @@ jobs:
       - docker/build:
           image: mivodu/udacity-capstone-hello-michael #$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
       - docker/push:
-          digest-path: /tmp/digest.txt
           image: mivodu/udacity-capstone-hello-michael
-      - run:
-          command: |
-            echo "Digest is: $(</tmp/digest.txt)"
+          tag: latest
   check-stack-availability:
     executor: aws-cli/default
     steps:

@@ -60,14 +60,27 @@ jobs:
             --template temp.yml \
             --stack << parameters.stack-name >> \
           no_output_timeout: 30m
-  deploy-application:
-#    executor: aws-eks/python3
+  create-deployment:
+    executor: aws-cli/default
     steps:
       - checkout
+      - aws-cli/setup
       - aws-eks/update-kubeconfig-with-authenticator:
           cluster-name: "Udacity-Capstone-Hello-Michael"
           install-kubectl: true
-          aws-region: "us-east-1"
+#      - kubernetes/create-or-update-resource:
+#          get-rollout-status: true
+#          resource-file-path: tests/nginx-deployment/deployment.yaml
+#          resource-name: deployment/nginx-deployment
+
+#  deploy-application:
+#    executor: aws-eks/python3
+#    steps:
+#      - checkout
+#      - aws-eks/update-kubeconfig-with-authenticator:
+#          cluster-name: "Udacity-Capstone-Hello-Michael"
+#          install-kubectl: true
+#          aws-region: "us-east-1"
 #      - kubernetes/create-or-update-resource:
 #          resource-file-path: "app-deployment.yaml"
 #          get-rollout-status: true
@@ -77,7 +90,7 @@ jobs:
 workflows:
   default:
    jobs:
-     - deploy-application
+     - create-deployment
 #    - docker/hadolint
 #    - build-and-push-docker-image:
 #        requires: 

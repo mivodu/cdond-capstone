@@ -28,7 +28,7 @@ jobs:
       - checkout
       - run:
           name: Validate CloudFormation template
-          command: pip install cfn-lint && cfn-lint temp.yml            
+          command: pip install cfn-lint && cfn-lint cfn-eks-temp.yml            
   deploy-cfn:
     parameters:
       stack-name:
@@ -47,26 +47,10 @@ jobs:
             else
               echo "Cloudformation stack does not exist yet, we have to create it"
               aws cloudformation deploy \
-                --template temp.yml \
+                --template cfn-eks-temp.yml \
                 --stack << parameters.stack-name >> \              
             fi
           no_output_timeout: 30m
-#  deploy-cfn:
-#    parameters:
-#      stack-name:
-#        description: Name of the CloudFormation stack
-#        type: string
-#    executor: aws-cli/default
-#    steps:
-#      - checkout
-#      - aws-cli/setup
-#      - run:
-#          name: Deploy Cloudformation Template
-#          command: |
-#            aws cloudformation deploy \
-#            --template temp.yml \
-#            --stack << parameters.stack-name >> \
-#          no_output_timeout: 30m
   create-deployment:
     executor: aws-cli/default
     steps:
@@ -79,7 +63,6 @@ jobs:
           resource-file-path: app-deployment.yaml
           get-rollout-status: true
           resource-name: deployment/hello-michael
-#          namespace: test
       - kubernetes/create-or-update-resource:
           resource-file-path: app-service.yaml
 

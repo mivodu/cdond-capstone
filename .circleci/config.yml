@@ -69,17 +69,17 @@ jobs:
 workflows:
   default:
     jobs:
-      - docker/hadolint
-      - build-and-push-docker-image:
-          requires: 
-            - docker/hadolint
-      - lint-cfn
-      - deploy-cfn:
-          stack-name: Udacity-Capstone-Hello-Michael
-          requires:
-            - lint-cfn
+#      - docker/hadolint
+#      - build-and-push-docker-image:
+#          requires: 
+#            - docker/hadolint
+#      - lint-cfn
+#      - deploy-cfn:
+#          stack-name: Udacity-Capstone-Hello-Michael
+#          requires:
+#            - lint-cfn
+#      - create-deployment:
+#          requires:
+#            - build-and-push-docker-image
+#            - deploy-cfn
       - create-deployment:
-          requires:
-            - build-and-push-docker-image
-            - deploy-cfn
-

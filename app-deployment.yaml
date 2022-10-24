@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: hello-michael
-          image: mivodu/udacity-capstone-hello-michael
+          image: mivodu/udacity-capstone-hello-michael:latest
           ports:
             - containerPort: 80
           readinessProbe:

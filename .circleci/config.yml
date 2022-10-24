@@ -61,7 +61,7 @@ jobs:
             --stack << parameters.stack-name >> \
           no_output_timeout: 30m
   deploy-application:
-    executor: aws-eks/python3
+#    executor: aws-eks/python3
     steps:
       - checkout
       - aws-eks/update-kubeconfig-with-authenticator:

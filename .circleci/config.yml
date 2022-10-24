@@ -4,12 +4,22 @@ orbs:
   docker: circleci/docker@2.1.4
   aws-cli: circleci/aws-cli@1.4.0
 
-parameters:
-  cfn_stack_available:
-    type: boolean
-    default: false
-
 jobs:
+  build-and-push-docker-image:
+    executor: docker/docker
+    steps:
+      - setup_remote_docker
+      - checkout
+      - docker/check
+      - docker/build:
+          image: mivodu/udacity-capstone-hello-michael #$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+      - docker/push:
+          digest-path: /tmp/digest.txt
+          image: mivodu/udacity-capstone-hello-michael
+      - run:
+          command: |
+            echo "Digest is: $(</tmp/digest.txt)"
+
 #  docker/publish:
 #    executor:
 #      image: circleci/node
@@ -70,27 +80,18 @@ jobs:
 #      - run: echo "I am on main AND param1 is true OR param2 is true -- OR param1 is false"
 
 workflows:
-  default:
-    jobs:
-      #- docker/hadolint
-      #- docker/publish:
-      #    executor:
-      #      image: circleci/node
-      #      name: docker/docker
-      #      tag: boron-browsers
-      #    image: my/image
-      #    remote-docker-dlc: true
-      #    tag: my-tag
-      #    use-remote-docker: true   
-      #    deploy: false #do not publish yet       
-      #    requires: 
-      #      - docker/hadolint
-      - check-stack-availability
-#      - lint-cfn
-#      - deploy-cfn:
-#          stack-name: Udacity-Capstone-Hello-Michael
-#          requires:
-#            - lint-cfn
+  jobs:
+    - docker/hadolint
+    - build-and-push-docker-image
+        requires: 
+          - docker/hadolint
+#    - check-stack-availability
+#    - lint-cfn
+#    - deploy-cfn:
+#        stack-name: Udacity-Capstone-Hello-Michael
+#        requires:
+#          - lint-cfn
+
 
 
 #  conditional-workflow:

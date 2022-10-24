@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-michael
+  labels:
+    app: udacity-capstone-hello-michael
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 50%
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: udacity-capstone-hello-michael
+  template:
+    metadata:
+      labels:
+        app: udacity-capstone-hello-michael
+    spec:
+      containers:
+        - name: hello-michael
+          image: mivodu/udacity-capstone-hello-michael
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /api
+              port: 80
+            periodSeconds: 10

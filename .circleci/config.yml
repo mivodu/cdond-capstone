@@ -96,11 +96,12 @@ jobs:
 workflows:
   default:
    jobs:
-     - create-deployment
-#    - docker/hadolint
-#    - build-and-push-docker-image:
-#        requires: 
-#          - docker/hadolint
+
+    - docker/hadolint
+    - build-and-push-docker-image:
+        requires: 
+          - docker/hadolint
+#     - create-deployment
 #    - check-stack-availability
 #    - lint-cfn
 #    - deploy-cfn:

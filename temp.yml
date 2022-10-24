@@ -5,30 +5,10 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: EKS cluster using a VPC with two public and two private subnets
 Parameters:
-  EKSClusterName:
-    Type: String
-    Description: Name of k8s cluster
-    Default: udacity-capstone-eks-cluster
-#  NumWorkerNodes:
-#    Type: Number
-#    Description: Number of worker nodes to create
-#    Default: 2
   WorkerNodesInstanceType:
     Type: String
     Description: EC2 instance type for the worker nodes
     Default: t2.micro  
-#  KeyPairName:
-#    Type: String
-#    Description: Name of an existing EC2 key pair (for SSH-access to the worker node instances)
-#    Default: udacity  
-#  NodeImageId:
-#    Type: String
-#    Default: ""
-#    Description: (Optional) Specify your own custom image ID. This value overrides any AWS Systems Manager Parameter Store value specified above.
-#  NodeImageIdSSMParam:
-#    Type: "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>"
-#    Default: /aws/service/eks/optimized-ami/1.14/amazon-linux-2/recommended/image_id
-#    Description: AWS Systems Manager Parameter Store parameter of the AMI ID for the worker node instances.
   
 Mappings:
   VpcIpRanges:
@@ -38,12 +18,6 @@ Mappings:
       PublicSubnet2: 192.168.1.0/24
       PrivateSubnet1: 192.168.100.0/24
       PrivateSubnet2: 192.168.101.0/24
-
-#Conditions:
-#  HasNodeImageId: !Not
-#    - "Fn::Equals":
-#        - Ref: NodeImageId
-#        - ""
 
 Resources:
   #============================================================================#
@@ -67,11 +41,11 @@ Resources:
       AvailabilityZone: !Select [ 0, !GetAZs '' ]
       Tags:
         - Key: Name
-          Value: !Sub "${AWS::StackName}-PublicSubnet1"
+          Value: udacity-capstone-eks-cluster-PublicSubnet1
         - Key: kubernetes.io/role/elb
           Value: 1
-        - Key: !Sub "kubernetes.io/cluster/${AWS::StackName}"
-          Value: shared
+        - Key: kubernetes.io/cluster/udacity-capstone-eks-cluster
+          Value: owned
   PublicSubnet2:
     Type: AWS::EC2::Subnet
     Properties:
@@ -80,11 +54,11 @@ Resources:
       AvailabilityZone: !Select [ 1, !GetAZs '' ]
       Tags:
         - Key: Name
-          Value: !Sub "${AWS::StackName}-PublicSubnet2"
+          Value: udacity-capstone-eks-cluster-PublicSubnet2
         - Key: kubernetes.io/role/elb
           Value: 1
-        - Key: !Sub "kubernetes.io/cluster/${AWS::StackName}"
-          Value: shared
+        - Key: kubernetes.io/cluster/udacity-capstone-eks-cluster
+          Value: owned
   PrivateSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
@@ -93,11 +67,11 @@ Resources:
       AvailabilityZone: !Select [ 0, !GetAZs '' ]
       Tags:
         - Key: Name
-          Value: !Sub "${AWS::StackName}-PrivateSubnet1"
+          Value: udacity-capstone-eks-cluster-PrivateSubnet1
         - Key: kubernetes.io/role/internal-elb
           Value: 1
-        - Key: !Sub "kubernetes.io/cluster/${AWS::StackName}"
-          Value: shared
+        - Key: kubernetes.io/cluster/udacity-capstone-eks-cluster
+          Value: owned
   PrivateSubnet2:
     Type: AWS::EC2::Subnet
     Properties:
@@ -106,11 +80,11 @@ Resources:
       AvailabilityZone: !Select [ 1, !GetAZs '' ]
       Tags:
         - Key: Name
-          Value: !Sub "${AWS::StackName}-PrivateSubnet2"
+          Value: udacity-capstone-eks-cluster-PrivateSubnet2
         - Key: kubernetes.io/role/internal-elb
           Value: 1
-        - Key: !Sub "kubernetes.io/cluster/${AWS::StackName}"
-          Value: shared
+        - Key: kubernetes.io/cluster/udacity-capstone-eks-cluster
+          Value: owned
   InternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
@@ -128,7 +102,7 @@ Resources:
       VpcId: !Ref VPC
       Tags:
         - Key: Name
-          Value: !Sub "${AWS::StackName}-PublicSubnets"
+          Value: udacity-capstone-eks-cluster-PublicSubnets
   InternetGatewayRoute:
     Type: AWS::EC2::Route
     DependsOn: VPCGatewayAttachment
@@ -162,7 +136,7 @@ Resources:
       VpcId: !Ref VPC
       Tags:
         - Key: Name
-          Value: !Sub ${AWS::StackName} Private Routes (AZ1)
+          Value: udacity-capstone-eks-cluster Private Routes (AZ1)
   DefaultPrivateRoute1:
     Type: AWS::EC2::Route
     Properties:
@@ -175,7 +149,7 @@ Resources:
       VpcId: !Ref VPC
       Tags:
         - Key: Name
-          Value: !Sub ${AWS::StackName} Private Routes (AZ1)
+          Value: udacity-capstone-eks-cluster Private Routes (AZ1)
   DefaultPrivateRoute2:
     Type: AWS::EC2::Route
     Properties:
@@ -211,7 +185,7 @@ Resources:
   ControlPlane:
     Type: AWS::EKS::Cluster
     Properties:
-      Name: !Ref EKSClusterName
+      Name: udacity-capstone-eks-cluster
       RoleArn: arn:aws:iam::740460536467:role/eksClusterRole # hardcoded role as creation through fn does not work
       ResourcesVpcConfig:
         SecurityGroupIds:
@@ -231,7 +205,7 @@ Resources:
       VpcId: !Ref VPC
       Tags:
         - Key: Name
-          Value: !Sub "${AWS::StackName}-ControlPlaneSecurityGroup"
+          Value: udacity-capstone-eks-cluster-ControlPlaneSecurityGroup
 
   ControlPlaneIngressFromWorkerNodesHttps:
     Type: AWS::EC2::SecurityGroupIngress
@@ -273,8 +247,8 @@ Resources:
       VpcId: !Ref VPC
       Tags:
         - Key: Name
-          Value: !Sub "${AWS::StackName}-WorkerNodesSecurityGroup"
-        - Key: !Sub "kubernetes.io/cluster/${ControlPlane}"
+          Value: udacity-capstone-eks-cluster-WorkerNodesSecurityGroup
+        - Key: kubernetes.io/cluster/udacity-capstone-eks-cluster
           Value: "owned"
   WorkerNodesIngressFromWorkerNodes:
     Type: AWS::EC2::SecurityGroupIngress
@@ -302,81 +276,21 @@ Resources:
       FromPort: 443
       ToPort: 443
 
-  #============================================================================#
-  # Worker nodes (auto-scaling group)
-  #============================================================================#
-
-#  WorkerNodesAutoScalingGroup:
-#    Type: AWS::AutoScaling::AutoScalingGroup
-#    UpdatePolicy:
-#      AutoScalingRollingUpdate:
-#        MinInstancesInService: 1
-#        MaxBatchSize: 1
-#    Properties:
-#      LaunchConfigurationName: !Ref WorkerNodesLaunchConfiguration
-#      MinSize: !Ref NumWorkerNodes
-#      MaxSize: !Ref NumWorkerNodes
-#      VPCZoneIdentifier:
-#        - !Ref PrivateSubnet1
-#        - !Ref PrivateSubnet2
-#      Tags:
-#        - Key: Name
-#          Value: !Sub "${AWS::StackName}-WorkerNodesAutoScalingGroup"
-#          PropagateAtLaunch: true
-        # Without this tag, worker nodes are unable to join the cluster:
-#        - Key: !Sub "kubernetes.io/cluster/${ControlPlane}"
-#          Value: "owned"
-#          PropagateAtLaunch: true
-
-  # IMPORTANT NOTE: We have to define NodeGroup (type: AWS::EKS::Nodegroup), without this no woker nodes will be attach to cluster
   WorkerNodegroup:
     Type: AWS::EKS::Nodegroup
     DependsOn: ControlPlane
     Properties:
-      ClusterName: !Ref EKSClusterName
+      ClusterName: udacity-capstone-eks-cluster
       NodeRole: arn:aws:iam::740460536467:role/WorkerNodeInstanceRole # hard coded
       InstanceTypes: 
         - Ref: WorkerNodesInstanceType 
-#      LaunchTemplate: !Ref WorkerNodesLaunchConfiguration # added
       ScalingConfig:
         MinSize: 2
-#          Ref: NumWorkerNodes
         DesiredSize: 2
-#          Ref: NumWorkerNodes
         MaxSize: 4
-#          Ref: NumWorkerNodes
       Subnets:
         - !Ref PrivateSubnet1
         - !Ref PrivateSubnet2
-#      Tags:
-#        - Key: Name
-#          Value: "WorkerNodesAutoScalingGroup"
-#  WorkerNodesLaunchConfiguration:
-#    Type: AWS::AutoScaling::LaunchConfiguration
-    # Wait until cluster is ready before launching worker nodes
-#    DependsOn: ControlPlane
-#    Properties:
-#      AssociatePublicIpAddress: false
-#      IamInstanceProfile: !Ref WorkerNodesInstanceProfile
-#      ImageId: !If
-#        - HasNodeImageId
-#        - Ref: NodeImageId
-#        - Ref: NodeImageIdSSMParam
-#      InstanceType: !Ref WorkerNodesInstanceType
-#      KeyName: !Ref KeyPairName
-#      SecurityGroups:
-#        - !Ref WorkerNodesSecurityGroup
-#      UserData:
-#        Fn::Base64: !Sub |
-            #!/bin/bash
-#            set -o xtrace
-#            /etc/eks/bootstrap.sh ${ControlPlane}
-#            /opt/aws/bin/cfn-signal \
-#                            --exit-code $? \
-#                            --stack  ${AWS::StackName} \
-#                            --resource WorkerNodeGroup \
-#                            --region ${AWS::Region}
-#            /usr/bin/ping -c 5 google.com 
   WorkerNodesInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:

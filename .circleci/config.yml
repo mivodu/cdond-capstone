@@ -18,8 +18,8 @@ jobs:
       - docker/build:
           image: mivodu/udacity-capstone-hello-michael #$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
       - docker/push:
-          image: mivodu/udacity-capstone-hello-michael
-          tag: latest
+          image: mivodu/udacity-capstone-hello-michael:latest
+#          tag: latest
   check-stack-availability:
     executor: aws-cli/default
     steps:

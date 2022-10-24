@@ -1,6 +1,5 @@
-# This Cloudformation template will creae following modules
-# VPC, 2-public subnest, InternetGateway, 2 private subnets, 2 Persistence subnets (private)
-# EKS ckuster with One node group
+# Cloudformation template to create an AWS EKS cluster with a managed node group
+# Based on public available aws templates
 
 AWSTemplateFormatVersion: '2010-09-09'
 Description: EKS cluster using a VPC with two public and two private subnets

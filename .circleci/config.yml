@@ -27,7 +27,7 @@ jobs:
       - run:
           name: check cloudformation stack
           command: |
-            if aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE | grep "StackName": "Udacity-Capstone-Hello-Michael"
+            if aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE | grep -F '"StackName": "Udacity-Capstone-Hello-Michael"'
             then
               echo "stack already exists"
             else

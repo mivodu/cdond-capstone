@@ -1,7 +1,6 @@
 version: '2.1'
 
 orbs:
-  anchore-engine: anchore/anchore-engine@1.0.0
   docker: circleci/docker@2.1.4
   aws-cli: circleci/aws-cli@3.1
   aws-eks: circleci/aws-eks@2.2
@@ -96,12 +95,8 @@ workflows:
           stack-name: Udacity-Capstone-Hello-Michael
           requires:
             - lint-cfn
-      - anchore/image_scan:
-          image_name: mivodu/udacity-capstone-hello-michael:latest
-          timeout: '300'    
+      - create-deployment:
           requires:
             - build-and-push-docker-image
             - deploy-cfn
-      - create-deployment:
-          requires:
-            - anchore/image_scan
+

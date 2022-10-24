@@ -1,6 +1,7 @@
 version: '2.1'
 
 orbs:
+  anchore-engine: anchore/anchore-engine@1.0.0
   docker: circleci/docker@2.1.4
   aws-cli: circleci/aws-cli@3.1
   aws-eks: circleci/aws-eks@2.2
@@ -16,24 +17,11 @@ jobs:
           docker-username: DOCKERHUB_LOGIN
           docker-password: DOCKERHUB_PASSWORD
       - docker/build:
-          image: mivodu/udacity-capstone-hello-michael #$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+          image: mivodu/udacity-capstone-hello-michael
           tag: latest
       - docker/push:
           image: mivodu/udacity-capstone-hello-michael
           tag: latest
-  check-stack-availability:
-    executor: aws-cli/default
-    steps:
-      - aws-cli/setup
-      - run:
-          name: check cloudformation stack
-          command: |
-            if aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE | grep -F '"StackName": "Udacity-Capstone-Hello-Michael"'
-            then
-              echo "stack already exists"
-            else
-              echo "stack does not exist yet"
-            fi
   lint-cfn:
     docker:
       - image: cimg/python:3.9
@@ -52,12 +40,34 @@ jobs:
       - checkout
       - aws-cli/setup
       - run:
-          name: Deploy Cloudformation Template
+          name: Create cloudformation stack if it doesn't exist yet
           command: |
-            aws cloudformation deploy \
-            --template temp.yml \
-            --stack << parameters.stack-name >> \
+            if aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE | grep -F '"StackName": "Udacity-Capstone-Hello-Michael"'
+            then
+              echo "Cloudformation stack already exists, nothing to create"
+            else
+              echo "Cloudformation stack does not exist yet, we have to create it"
+              aws cloudformation deploy \
+                --template temp.yml \
+                --stack << parameters.stack-name >> \              
+            fi
           no_output_timeout: 30m
+#  deploy-cfn:
+#    parameters:
+#      stack-name:
+#        description: Name of the CloudFormation stack
+#        type: string
+#    executor: aws-cli/default
+#    steps:
+#      - checkout
+#      - aws-cli/setup
+#      - run:
+#          name: Deploy Cloudformation Template
+#          command: |
+#            aws cloudformation deploy \
+#            --template temp.yml \
+#            --stack << parameters.stack-name >> \
+#          no_output_timeout: 30m
   create-deployment:
     executor: aws-cli/default
     steps:
@@ -73,39 +83,25 @@ jobs:
 #          namespace: test
       - kubernetes/create-or-update-resource:
           resource-file-path: app-service.yaml
-
-
-#      - kubernetes/create-or-update-resource:
-#          get-rollout-status: true
-#          resource-file-path: tests/nginx-deployment/deployment.yaml
-#          resource-name: deployment/nginx-deployment
-
-#  deploy-application:
-#    executor: aws-eks/python3
-#    steps:
-#      - checkout
-#      - aws-eks/update-kubeconfig-with-authenticator:
-#          cluster-name: "Udacity-Capstone-Hello-Michael"
-#          install-kubectl: true
-#          aws-region: "us-east-1"
-#      - kubernetes/create-or-update-resource:
-#          resource-file-path: "app-deployment.yaml"
-#          get-rollout-status: true
-#          resource-name: hello-michael
-#      - kubernetes/create-or-update-resource:
-#          resource-file-path: "app-service.yaml"
 workflows:
   default:
    jobs:
+    - docker/hadolint
+    - build-and-push-docker-image:
+        requires: 
+          - docker/hadolint
+    - lint-cfn
+    - deploy-cfn:
+        stack-name: Udacity-Capstone-Hello-Michael
+        requires:
+          - lint-cfn
+    - anchore/image_scan:
+        image_name: mivodu/udacity-capstone-hello-michael:latest
+        timeout: '300'    
+        requires:
+          - build-and-push-docker-image
+          - deploy-cfn
 
-#    - docker/hadolint
-#    - build-and-push-docker-image:
-#        requires: 
-#          - docker/hadolint
-     - create-deployment
-#    - check-stack-availability
-#    - lint-cfn
-#    - deploy-cfn:
-#        stack-name: Udacity-Capstone-Hello-Michael
-#        requires:
-#          - lint-cfn
+     - create-deployment:
+        requires:
+          - anchore/image_scan

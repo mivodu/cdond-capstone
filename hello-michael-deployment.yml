@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-michael-deployment
+  labels:
+    app: udacity-capstone-hello-michael
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 50%
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: udacity-capstone-hello-michael
+  template:
+    metadata:
+      labels:
+        app: udacity-capstone-hello-michael
+    spec:
+      containers:
+        - name: hello-michael
+          image: containous/whoami
+          ports:
+            - containerPort: 80

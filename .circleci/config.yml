@@ -15,12 +15,10 @@ jobs:
       - docker/check:
           docker-username: DOCKERHUB_LOGIN
           docker-password: DOCKERHUB_PASSWORD
-#      - docker/build:
-#          image: mivodu/udacity-capstone-hello-michael #$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
-#      - docker/push:
-#          image: mivodu/udacity-capstone-hello-michael
-#          tag: latest
-      - docker/publish:
+      - docker/build:
+          image: mivodu/udacity-capstone-hello-michael #$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+          tag: latest
+      - docker/push:
           image: mivodu/udacity-capstone-hello-michael
           tag: latest
   check-stack-availability:

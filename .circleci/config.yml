@@ -63,18 +63,19 @@ jobs:
     steps:
       - checkout
       - aws-eks/update-kubeconfig-with-authenticator:
-          cluster-name: Udacity-Capstone-Hello-Michael
+          cluster-name: "Udacity-Capstone-Hello-Michael"
           install-kubectl: true
-          aws-region: us-east-1
+          aws-region: "us-east-1"
       - kubernetes/create-or-update-resource:
-          resource-file-path: app-deployment.yaml
+          resource-file-path: "app-deployment.yaml"
           get-rollout-status: true
           resource-name: hello-michael
       - kubernetes/create-or-update-resource:
-          resource-file-path: app-service.yaml
+          resource-file-path: "app-service.yaml"
 workflows:
   default:
    jobs:
+     - deploy-application
 #    - docker/hadolint
 #    - build-and-push-docker-image:
 #        requires: 
@@ -85,4 +86,3 @@ workflows:
 #        stack-name: Udacity-Capstone-Hello-Michael
 #        requires:
 #          - lint-cfn
-      - deploy-application

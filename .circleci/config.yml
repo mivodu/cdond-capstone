@@ -23,6 +23,7 @@ jobs:
   check-stack-availability:
     executor: aws-cli/default
     steps:
+      - aws-cli/setup
       - run:
           name: check cloudformation stack
           command: |

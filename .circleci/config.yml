@@ -24,7 +24,7 @@ jobs:
     executor: aws-cli/default
     steps:
       - run:
-        name: check cloudformation stack
+          name: check cloudformation stack
           command: |
             if aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE | grep "Udacity-Capstone-Hello-Michael"
             then

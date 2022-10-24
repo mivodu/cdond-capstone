@@ -4,7 +4,7 @@ orbs:
   docker: circleci/docker@2.1.4
   aws-cli: circleci/aws-cli@3.1
   aws-eks: circleci/aws-eks@2.2
-  kubernetes: circleci/kubernetes@1.3
+  kubernetes: circleci/kubernetes@1.3.1
 
 jobs:
   build-and-push-docker-image:
@@ -68,12 +68,12 @@ jobs:
           cluster-name: "Udacity-Capstone-Hello-Michael"
           install-kubectl: true
           aws-region: "us-east-1"
-      - kubernetes/create-or-update-resource:
-          resource-file-path: "app-deployment.yaml"
-          get-rollout-status: true
-          resource-name: hello-michael
-      - kubernetes/create-or-update-resource:
-          resource-file-path: "app-service.yaml"
+#      - kubernetes/create-or-update-resource:
+#          resource-file-path: "app-deployment.yaml"
+#          get-rollout-status: true
+#          resource-name: hello-michael
+#      - kubernetes/create-or-update-resource:
+#          resource-file-path: "app-service.yaml"
 workflows:
   default:
    jobs:

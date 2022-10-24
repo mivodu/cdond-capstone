@@ -71,7 +71,8 @@ jobs:
       - kubernetes/create-or-update-resource:
           resource-file-path: app-deployment.yaml
           get-rollout-status: true
-          resource-name: hello-michael
+          resource-name: deployment/hello-michael
+#          namespace: test
       - kubernetes/create-or-update-resource:
           resource-file-path: app-service.yaml
 
